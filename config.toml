@@ -1,4 +1,4 @@
 [server_config]
 bind_address = "0.0.0.0"
-port = 8888
+port = 8080
 website_dir = "./static"

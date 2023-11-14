@@ -5,7 +5,7 @@ use std::fs;
 
 // Top level struct to hold data from TOML file
 #[derive(Deserialize)]
-struct ConfigFile {
+struct ConfigToml {
     server_config: ServerConfig,
 }
 
@@ -17,18 +17,18 @@ struct ServerConfig {
     website_dir: String,
 }
 
-// Function to load server configuration from a TOML file
+// Function to load the server configuration data from TOML file
 fn load_config(config_path: &str) -> ServerConfig {
     // Read the contents of the TOML file into a string
-    let config_contents = fs::read_to_string(config_path)
-        .expect("Unable to read configuration file.");
+    let toml_contents =
+        fs::read_to_string(config_path).expect("Unable to read configuration file.");
 
-    // Deserialize the TOML data into top level struct
-    let config_struct : ConfigFile = toml::from_str(&config_contents)
-        .expect("Invalid configuration file.");
+    // Deserialize the TOML data to top level struct
+    let config_toml: ConfigToml =
+        toml::from_str(&toml_contents).expect("Invalid configuration file.");
 
     // Return the inner ServerConfig struct
-    return config_struct.server_config;
+    return config_toml.server_config;
 }
 
 // Main Actix web server function
@@ -42,10 +42,8 @@ async fn main() -> std::io::Result<()> {
         App::new().service(Files::new("/", &server_config.website_dir)
             .index_file("index.html"))
     })
-        .bind((server_config.bind_address, server_config.port))
-        .expect("Unable to bind to address")
-        .run()
-        .await
+    .bind((server_config.bind_address, server_config.port))
+    .expect("Unable to bind to address")
+    .run()
+    .await
 }
-
-

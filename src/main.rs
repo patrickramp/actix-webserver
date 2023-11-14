@@ -1,7 +1,7 @@
 use actix_files::Files;
 use actix_web::{guard, App, HttpServer};
 use serde_derive::Deserialize;
-use std::fs;
+use std::{fs, env};
 
 // Top level struct to hold data from TOML file
 #[derive(Deserialize)]
@@ -40,9 +40,12 @@ fn load_config(config_path: &str) -> ServerConfig {
 // Main Actix web server function
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    // Collect command line arguments containing the path to the configuration file
+    let args: Vec<String> = env::args().collect();
+    // Get the path to the configuration file
+    let config_path = &args[1];
     // Load the configuration from the config.toml file
-    let server_config = load_config("./config.toml");
-
+    let server_config = load_config(config_path);
     // Create an Actix web server with the specified configuration
     HttpServer::new(move || {
         App::new()

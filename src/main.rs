@@ -44,7 +44,7 @@ async fn main() -> std::io::Result<()> {
     let args: Vec<String> = env::args().collect();
     // Get the path to the configuration file
     let config_path = &args[1];
-    // Load the configuration from the config.toml file
+    // Load the configuration from the TOML file
     let server_config = load_config(config_path);
     // Create an Actix web server with the specified configuration
     HttpServer::new(move || {

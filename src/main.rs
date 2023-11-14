@@ -47,12 +47,12 @@ async fn main() -> std::io::Result<()> {
             // Service for serving static files from configured directory
             .service(
                 Files::new("/", &server_config.static_dir)
-                    // Guard to restrict access to specified hostname (to prevent hotlinking)
+                    // Guard to restrict access to specified hostname (prevent hotlinks)
                     .guard(guard::Host(&server_config.hostname))
                     // Index file name
                     .index_file(&server_config.index_file),
             )
-            // Redundant service to specify alternate hostname if needed
+            // Redundant service to serve specified file from alternate hostname if needed
             .service(
                 Files::new("/", &server_config.static_dir)
                     .guard(guard::Host(&server_config.alt_hostname))

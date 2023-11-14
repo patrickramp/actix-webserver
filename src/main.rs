@@ -1,5 +1,5 @@
 use actix_files::Files;
-use actix_web::{App, HttpServer};
+use actix_web::{guard, App, HttpServer};
 use serde_derive::Deserialize;
 use std::fs;
 
@@ -14,7 +14,11 @@ struct ConfigToml {
 struct ServerConfig {
     bind_address: String,
     port: u16,
-    website_dir: String,
+    static_dir: String,
+    index_file: String,
+    alt_index: String,
+    hostname: String,
+    alt_hostname: String,
 }
 
 // Function to load the server configuration data from TOML file
@@ -39,8 +43,21 @@ async fn main() -> std::io::Result<()> {
 
     // Create an Actix web server with the specified configuration
     HttpServer::new(move || {
-        App::new().service(Files::new("/", &server_config.website_dir)
-            .index_file("index.html"))
+        App::new()
+            // Service for serving static files from configured directory
+            .service(
+                Files::new("/", &server_config.static_dir)
+                    // Guard to restrict access to specified hostname (to prevent hotlinking)
+                    .guard(guard::Host(&server_config.hostname))
+                    // Index file name
+                    .index_file(&server_config.index_file),
+            )
+            // Redundant service to specify alternate hostname if needed
+            .service(
+                Files::new("/", &server_config.static_dir)
+                    .guard(guard::Host(&server_config.alt_hostname))
+                    .index_file(&server_config.alt_index),
+            )
     })
     .bind((server_config.bind_address, server_config.port))
     .expect("Server unable to bind to specified address/port.")

@@ -21,7 +21,6 @@ struct ServerConfig {
     hostname2: String,
     mount_two: String,
     index_two: String,
-
 }
 
 // Function to load the server configuration data from TOML file

@@ -27,11 +27,11 @@ struct ServerConfig {
 fn load_config(config_path: &str) -> ServerConfig {
     // Read the contents of the TOML file into a string
     let toml_contents =
-        fs::read_to_string(config_path).expect("Unable to read configuration file.");
+        fs::read_to_string(config_path).expect("Unable to read from configuration file.");
 
     // Deserialize the TOML data to top level struct
     let config_toml: ConfigToml =
-        toml::from_str(&toml_contents).expect("Invalid configuration file.");
+        toml::from_str(&toml_contents).expect("Invalid TOML configuration file.");
 
     // Return the inner ServerConfig struct
     return config_toml.server_config;

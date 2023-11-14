@@ -43,7 +43,7 @@ async fn main() -> std::io::Result<()> {
             .index_file("index.html"))
     })
     .bind((server_config.bind_address, server_config.port))
-    .expect("Unable to bind to address")
+    .expect("Server unable to bind to specified address/port.")
     .run()
     .await
 }

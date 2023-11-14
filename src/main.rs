@@ -15,10 +15,13 @@ struct ServerConfig {
     bind_address: String,
     port: u16,
     static_dir: String,
-    index_file: String,
-    alt_index: String,
-    hostname: String,
-    alt_hostname: String,
+    hostname1: String,
+    mount_one: String,
+    index_one: String,
+    hostname2: String,
+    mount_two: String,
+    index_two: String,
+
 }
 
 // Function to load the server configuration data from TOML file
@@ -46,17 +49,17 @@ async fn main() -> std::io::Result<()> {
         App::new()
             // Service for serving static files from configured directory
             .service(
-                Files::new("/", &server_config.static_dir)
+                Files::new(&server_config.mount_one, &server_config.static_dir)
                     // Guard to restrict access to specified hostname (prevent hotlinks)
-                    .guard(guard::Host(&server_config.hostname))
+                    .guard(guard::Host(&server_config.hostname1))
                     // Index file name
-                    .index_file(&server_config.index_file),
+                    .index_file(&server_config.index_one),
             )
             // Redundant service to serve specified file from alternate hostname if needed
             .service(
-                Files::new("/", &server_config.static_dir)
-                    .guard(guard::Host(&server_config.alt_hostname))
-                    .index_file(&server_config.alt_index),
+                Files::new(&server_config.mount_two, &server_config.static_dir)
+                    .guard(guard::Host(&server_config.hostname2))
+                    .index_file(&server_config.index_two),
             )
     })
     .bind((server_config.bind_address, server_config.port))

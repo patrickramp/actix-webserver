@@ -1,8 +1,14 @@
+
 [server_config] # Main Actix web server configuration
 bind_address = "0.0.0.0" # Bind address to listen on (default: 0.0.0.0 - listen on all interfaces)
 port = 8080 # Port the server will listen on (make sure port is open and not already in use)
-static_dir = "./static/" # Directory to serve static files from
-index_file = "index.html" # Default file to serve from static_dir
-alt_index = "index2.html" # Alternate file to serve from alt_hostname (set same as index_file if not needed)
-hostname = "example.com" # Hostname for server to restrict access (prevents hotlinking) (set as empty string to disable)
-alt_hostname = "www.example.com" # Alternate hostname (set same as hostname if not needed)
+static_dir = "/var/www/static/" # Relative or absolute directory to serve static files from
+hostname1 = "localhost" # Restricts server access to specified hostname (i.e. example.com) (prevents hotlinking)
+mount_one = "/" # Primary webpath to mount index_one on webserver
+index_one = "/website/index.html" # Default file to serve on selected webpath
+
+            ## Optional configuration for alternate or secondary hostname
+
+hostname2 = "" # Alternate hostname (i.e. www.example.com, example2.com) (set as empty string to disable)
+mount_two = "/home/" # Alternate webpath (used for index_two at hostname2) (can be same as mount_one)
+index_two = "website_two/index.html" # Alternate default file (mounted at mount_two for hostname2) (can be same as index_one)

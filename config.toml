@@ -7,9 +7,9 @@ static_dir = "/var/www/" # Relative or absolute directory to serve static files 
 # Configuration for primary hostname
 hostname1 = "example.com" # Restricts server access to specified hostname (prevents hotlinking)
 mount_one = "/" # Webpath for index_one to be served at hostname1
-index_one = "website_one/index.html" # Default file to serve on hostname1 at mount_one
+index_one = "/website_one/index.html" # Default file to serve on hostname1 at mount_one
 
 # Optional configuration for alternate or secondary hostname
 hostname2 = "" # Alternate hostname (i.e. www.example.com, example2.com) (set as empty string to disable)
-mount_two = "/home/" # Webpath for index_two to be served at hostname2
-index_two = "website_two/index.html" # Default file to serve on hostname2 at mount_two
+mount_two = "/" # Webpath for index_two to be served at hostname2
+index_two = "/website_two/index.html" # Default file to serve on hostname2 at mount_two

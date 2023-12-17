@@ -2,14 +2,14 @@
 [server_config]
 bind_address = "0.0.0.0" # Bind address to listen on (default: 0.0.0.0 - listen on all interfaces)
 port = 8080 # Port the server will listen on (make sure port is open and not already in use)
-static_dir = "/var/www/" # Relative or absolute directory to serve static files from
+static_dir = "./static/" # Relative or absolute directory to serve static files from
 
 # Configuration for primary hostname
-hostname1 = "example.com" # Restricts server access to specified hostname (prevents hotlinking)
+hostname1 = "localhost" # Restricts server access to specified hostname (prevents hotlinking)
 mount_one = "/" # Webpath for index_one to be served at hostname1
-index_one = "/website_one/index.html" # Default file to serve on hostname1 at mount_one
+index_one = "index.html" # Default file to serve on hostname1 at mount_one
 
 # Optional configuration for alternate or secondary hostname
 hostname2 = "" # Alternate hostname (i.e. www.example.com, example2.com) (set as empty string to disable)
 mount_two = "/" # Webpath for index_two to be served at hostname2
-index_two = "/website_two/index.html" # Default file to serve on hostname2 at mount_two
+index_two = "index.html" # Default file to serve on hostname2 at mount_two

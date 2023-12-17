@@ -1,5 +1,5 @@
 # Main Actix web server configuration
-[server_config]
+[server-config]
 bind_address = "0.0.0.0" # Bind address to listen on (default: 0.0.0.0 - listen on all interfaces)
 port = 8080 # Port the server will listen on (make sure port is open and not already in use)
 static_dir = "./static/" # Relative or absolute directory to serve static files from

@@ -1,4 +1,4 @@
-Simple webserver for serving static HTML pages and files using Actix framework in Rust.
+Simple, multithreaded webserver for serving static HTML pages and files using Actix framework in Rust.
 
 Server is configured by passing the following environment variables.: [default]
   - BIND_TO= The IP address you wish the server to listen on. [0.0.0.0 (listens on all interfaces)] 

@@ -10,4 +10,4 @@ Server is configured by passing the following environment variables.: [default]
   - DOMAIN_TWO= Optional secondary domain name, [www.DOMAIN] (set as "" to disable)
   - MOUNT_TWO= Optional secondary web path for DOMAIN_TWO ["MOUNT"]
   - INDEX_TWO= Optional index file to serve at DOMAIN_TWO/MOUNT_TWO [INDEX]
-
+  - LOG_LVL= Logging level [info]

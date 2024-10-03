@@ -1,69 +1,71 @@
-// Import dependencies
+// Dependencies
 use actix_files::Files;
 use actix_web::{guard, middleware, App, HttpServer};
+use anyhow::{Context, Result};
 use std::env;
-use std::io;
 
 // Main Actix Web server function
 #[actix_web::main]
-async fn main() -> io::Result<()> {
+async fn main() -> Result<()> {
     // Retrieve server configuration from environment variables with default values
-    let bind_to = env::var("BIND_TO").unwrap_or_else(|_| "0.0.0.0".to_string());
-    let port = env::var("PORT").unwrap_or_else(|_| "8080".to_string());
-    let http_dir = env::var("HTTP_DIR").unwrap_or_else(|_| "./public".to_string());
-    let domain = env::var("DOMAIN").unwrap_or_else(|_| "localhost".to_string());
-    let mount = env::var("MOUNT").unwrap_or_else(|_| "/".to_string());
-    let index = env::var("INDEX").unwrap_or_else(|_| "index.html".to_string());
-    let domain_two = env::var("DOMAIN_TWO").unwrap_or_else(|_| format!("www.{}", domain));
-    let mount_two = env::var("MOUNT_TWO").unwrap_or_else(|_| mount.clone());
-    let index_two = env::var("INDEX_TWO").unwrap_or_else(|_| index.clone());
-    let log_lvl = env::var("LOG_LVL").unwrap_or_else(|_| "info".to_string());
+    let bind_address = env::var("BIND_TO").unwrap_or("0.0.0.0".to_string());
+    let port = env::var("PORT").unwrap_or("8080".to_string());
+    let http_directory = env::var("HTTP_DIR").unwrap_or_else(|_| "./public".to_string());
+    let primary_domain = env::var("DOMAIN").unwrap_or("localhost".to_string());
+    let primary_mount = env::var("MOUNT").unwrap_or("/".to_string());
+    let primary_index = env::var("INDEX").unwrap_or("index.html".to_string());
 
-    // Initialize logging
-    env_logger::init_from_env(env_logger::Env::new().default_filter_or(log_lvl));
+    // Default to "www" subdomain if not specified
+    let secondary_domain =
+        env::var("DOMAIN_TWO").unwrap_or_else(|_| format!("www.{}", primary_domain));
+    let secondary_mount = env::var("MOUNT_TWO").unwrap_or(primary_mount.clone());
+    let secondary_index = env::var("INDEX_TWO").unwrap_or(primary_index.clone());
+    let log_level = env::var("LOG_LVL").unwrap_or("info".to_string());
 
-    // Output server configuration to the console
-    println!("Starting Actix Web server...");
-    println!("Listening on: {}:{}", bind_to, port);
-    println!("Serving files from directory \"{}\"", http_dir);
-    println!(
-        "Primary domain is \"{}\" serving \"{}\" at \"{}\"",
-        domain, index, mount
+    // Initialize logging based on the environment variable
+    env_logger::init_from_env(env_logger::Env::new().default_filter_or(log_level));
+
+    // Log configuration summary
+    log::info!("Starting Actix Web server on {}:{}", bind_address, port);
+    log::info!(
+        "Serving files from: \"{}\". Primary domain: \"{}\" at mount: \"{}\" (index: \"{}\").",
+        http_directory,
+        primary_domain,
+        primary_mount,
+        primary_index
     );
-    println!(
-        "Secondary domain is \"{}\" serving \"{}\" at \"{}\"",
-        domain_two, index_two, mount_two
+    log::info!(
+        "Secondary domain: \"{}\" at mount: \"{}\" (index: \"{}\").",
+        secondary_domain,
+        secondary_mount,
+        secondary_index
     );
 
     // Configure and start the Actix Web server
     HttpServer::new(move || {
         App::new()
-            // Enable logging middleware
+            // Enable logging middleware for request logs
             .wrap(middleware::Logger::default())
-            // Service for primary domain
+            // Set up primary domain service
             .service(
-                Files::new(&mount, &http_dir)
-                    .guard(guard::Host(&domain))
-                    .index_file(&index),
+                Files::new(&primary_mount, &http_directory)
+                    .guard(guard::Host(&primary_domain))
+                    .index_file(&primary_index)
+                    .use_last_modified(true)
+                    .use_etag(true),
             )
-            // Service for secondary domain (if configured)
+            // Set up secondary domain service, if applicable
             .service(
-                Files::new(&mount_two, &http_dir)
-                    .guard(guard::Host(&domain_two))
-                    .index_file(&index_two),
+                Files::new(&secondary_mount, &http_directory)
+                    .guard(guard::Host(&secondary_domain))
+                    .index_file(&secondary_index)
+                    .use_last_modified(true)
+                    .use_etag(true),
             )
     })
-    // Configure server to use number of CPU cores for worker threads
-    .workers(num_cpus::get())
-    // Bind the server to the specified address and port
-    .bind(format!("{}:{}", bind_to, port))
-    .expect(
-        format!(
-            "Failed to bind to {}:{} - Ensure port is not in use.",
-            bind_to, port
-        )
-        .as_str(),
-    )
+    .bind(format!("{}:{}", bind_address, port))
+    .with_context(|| format!("Failed to bind to {}:{}", bind_address, port))?
     .run()
     .await
+    .context("Server encountered an unexpected error.")
 }

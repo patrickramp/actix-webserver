@@ -7,7 +7,7 @@ edition = "2021"
 authors = ["Your Name <youremail@example.com>"]
 description = "An optimized Actix Web server application"
 license = "MIT" # Choose a license that suits your project
-repository = "https://github.com/patrickramp/actix-web-server"
+repository = "https://github.com/patrickramp/actix-webserver"
 readme = "README.md"
 
 [dependencies]

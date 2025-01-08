@@ -2,9 +2,126 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Hello World</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello World!</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            color: black;
+            line-height: 1.6;
+            background: linear-gradient(to bottom, black 0%, darkblue 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            background: snow;
+            padding: 2em 3em;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: black; 
+        }
+
+        p {
+            padding: 0.5em 0;
+            color: black;
+        }
+
+        button {
+            background: darkblue;
+            color: white;
+            border: none;
+            padding: 0.75em 1.5em;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: darkslateblue;
+        }
+
+        .diagnostic {
+            margin-top: 1.5em;
+            font-size: 0.9em;
+            color: black;
+            display: none; /* Initially hidden */
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: darkgray;
+        }
+    </style>
 </head>
 <body>
-<p>Hello World! Your docker-actix-webserver is running.</p>
+    <div class="container">
+        <h1>Hello World!</h1>
+        <p>Your web server is running successfully!</p>
+        <button onclick="toggleDiagnostics()">Show Diagnostics</button>
+        <div class="diagnostic" id="diagnostic-info">
+            <p><strong>Browser:</strong> <span class="highlight" id="browser-info">Loading...</span></p>
+            <p><strong>Screen Resolution:</strong> <span class="highlight" id="screen-info">Loading...</span></p>
+        </div>
+        <button onclick="refreshPage()">Refresh Page</button>
+        <p><strong>Local Time:</strong> <span class="highlight" id="current-time">Loading...</span></p>
+    </div>
+
+    <script>
+        // Initialize the page
+        updateDiagnostics();
+
+        // Function to toggle the visibility of the diagnostics section
+        function toggleDiagnostics() {
+            const diagnostic = document.getElementById('diagnostic-info');
+            const button = event.target;
+
+            // Toggle display style
+            if (diagnostic.style.display === 'none' || diagnostic.style.display === '') {
+                diagnostic.style.display = 'block';
+                button.textContent = "Hide Diagnostics";
+                updateDiagnostics();
+            } else {
+                diagnostic.style.display = 'none';
+                button.textContent = "Show Diagnostics";
+            }
+        }
+
+        // Function to update diagnostics information
+        function updateDiagnostics() {
+            const now = new Date();
+            const browserInfo = `${navigator.appName} ${navigator.appVersion}`;
+            const screenInfo = `${screen.width}x${screen.height}`;
+
+            // Update diagnostic elements
+            document.getElementById('current-time').textContent = now.toLocaleString();
+            document.getElementById('browser-info').textContent = browserInfo;
+            document.getElementById('screen-info').textContent = screenInfo;
+        }
+
+        // Function to refresh entire page
+        function refreshPage() {
+          location.reload();
+        }
+    </script>
 </body>
 </html>
+

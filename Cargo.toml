@@ -1,11 +1,11 @@
 [package]
 name = "actix-webserver"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 
 # About
-authors = ["Your Name <youremail@example.com>"]
-description = "An optimized Actix Web server application"
+authors = ["Patrick Ramp"]
+description = "An optimized Actix web server application"
 license = "MIT" # Choose a license that suits your project
 repository = "https://github.com/patrickramp/actix-webserver"
 readme = "README.md"
@@ -16,13 +16,14 @@ actix-files = "0.6.6"
 actix-web = "4.9.0"
 
 # Logging
-env_logger = "0.11.5"
+env_logger = "0.11.6"
 log = "0.4.22"
 
 # Error handling with anyhow
-anyhow = "1.0.89"
+anyhow = "1.0.95"
 
 # Optional serialization dependencies
-# Uncomment or add these if required for your use case
-# serde = { version = "1.0.210", features = ["derive"] }
-# serde_json = "1.0.128"
+
+# Uncomment to add these if required for your use case
+#serde = { version = "1.0.217", features = ["derive"] }
+#serde_json = "1.0.135"
